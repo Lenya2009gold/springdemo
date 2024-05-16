@@ -1,0 +1,69 @@
+-- V1__Create_tables.sql
+
+CREATE TABLE training (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    registration_end_date TIMESTAMP,
+    status VARCHAR(50)
+);
+
+CREATE TABLE participant (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    username VARCHAR(50) NOT NULL,
+    telegram_id VARCHAR(50),
+    about TEXT,
+    birth_date DATE,
+    city VARCHAR(255),
+    education_status VARCHAR(50),
+    institution VARCHAR(255),
+    faculty VARCHAR(255),
+    specialty VARCHAR(255),
+    course VARCHAR(50)
+);
+
+CREATE TABLE session (
+    id SERIAL PRIMARY KEY,
+    training_id INT REFERENCES training(id),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50),
+    published BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE exercise (
+    id SERIAL PRIMARY KEY,
+    session_id INT REFERENCES session(id),
+    title VARCHAR(255) NOT NULL,
+    reference_repository VARCHAR(255)
+);
+
+CREATE TABLE participant_training (
+    id SERIAL PRIMARY KEY,
+    training_id INT REFERENCES training(id),
+    participant_id INT REFERENCES participant(id),
+    UNIQUE (training_id, participant_id)
+);
+
+CREATE TABLE exercise_participant (
+    id SERIAL PRIMARY KEY,
+    exercise_id INT REFERENCES exercise(id),
+    participant_id INT REFERENCES participant(id),
+    status VARCHAR(50),
+    comment TEXT,
+    last_commit_url VARCHAR(255),
+    UNIQUE (exercise_id, participant_id)
+);
+
+CREATE TABLE message (
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    role VARCHAR(50),
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
